@@ -1,0 +1,54 @@
+# ═══════════════════════════════════════════════════
+#  BlockBallot .gitignore
+# ═══════════════════════════════════════════════════
+
+# ── Build output ──────────────────────────────────
+target/
+build/
+bin/
+out/
+*.class
+*.jar
+*.war
+
+# ── Maven ─────────────────────────────────────────
+.mvn/wrapper/maven-wrapper.jar
+!.mvn/wrapper/maven-wrapper.properties
+mvnw
+mvnw.cmd
+
+# ── IDE — IntelliJ ────────────────────────────────
+.idea/
+*.iml
+*.iws
+*.ipr
+
+# ── IDE — Eclipse ─────────────────────────────────
+.classpath
+.project
+.settings/
+.factorypath
+
+# ── IDE — VS Code ─────────────────────────────────
+.vscode/
+
+# ── OS files ──────────────────────────────────────
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# ── Logs ──────────────────────────────────────────
+*.log
+logs/
+spring.log
+
+# ── H2 database files ────────────────────────────
+*.db
+*.mv.db
+*.trace.db
+
+# ── Environment / secrets ─────────────────────────
+.env
+*.env
+application-local.properties
+application-secret.properties

@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="BlockBallot — Security audit log. Track all voting events and system activity.">
+    <title>BlockBallot | Audit Log</title>
+    <link rel="stylesheet" href="/css/app.css?v=7">
+    <style>
+        html,
+        body {
+            margin: 0;
+            background: #0a0a0a;
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+    </style>
+</head>
+
+<body>
+
+    <nav class="topnav">
+        <div class="topnav-inner">
+            <a href="/" class="brand">
+                <div class="brand-seal">&#9878;</div>
+                <div class="brand-name">Block<span>Ballot</span></div>
+            </a>
+            <div class="nav-links">
+                <a href="/" class="nav-link">Cast Vote</a>
+                <a href="/results" class="nav-link">Live Results</a>
+                <a href="/ledger" class="nav-link">Ledger</a>
+                <a href="/audit" class="nav-link active">Audit</a>
+            </div>
+        </div>
+    </nav>
+
+    <div class="page-wrap">
+
+        <section class="hero">
+            <div class="hero-bg"></div>
+            <div class="hero-stripe"></div>
+            <div class="hero-content">
+                <div class="hero-badge anim-1">
+                    <span class="hero-badge-dot"></span>
+                    Security Monitor
+                </div>
+                <h1 class="hero-title anim-2">
+                    Audit <span class="accent">Log</span>
+                </h1>
+                <p style="color:var(--text-muted);margin-top:12px;font-size:1rem;" class="anim-3">
+                    All security-relevant events are logged immutably. IPs are masked for voter privacy.
+                </p>
+            </div>
+        </section>
+
+        <main class="main-content">
+
+            <!-- Chain Health Dashboard -->
+            <div class="stats-row anim-2" th:if="${chainStats}">
+                <div class="stat-card">
+                    <div class="stat-value" th:text="${chainStats.totalBlocks}">0</div>
+                    <div class="stat-label">Total Blocks</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value" th:text="${chainStats.totalVotes}">0</div>
+                    <div class="stat-label">Votes Cast</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value" th:text="${totalEntries}">0</div>
+                    <div class="stat-label">Audit Events</div>
+                </div>
+                <div class="stat-card">
+                    <button class="btn btn-primary" type="button" id="verifyChainBtn"
+                        onclick="verifyChain()" style="padding:10px 18px;font-size:.85rem;">
+                        &#x1F6E1; Verify Chain
+                    </button>
+                    <div id="verifyResult" class="stat-label" style="margin-top:8px;"></div>
+                </div>
+            </div>
+
+            <div class="card" style="margin-top:24px;">
+                <div class="section-header">
+                    <div class="section-label">Security Events</div>
+                    <div class="section-title">Recent Activity</div>
+                    <div class="section-sub">Showing the most recent 200 audit entries.</div>
+                </div>
+                <hr class="gold-divider">
+
+                <div class="toolbar">
+                    <input id="auditSearch" class="search" placeholder="&#128269;  Filter events...">
+                    <button type="button" id="clearAuditSearch" class="btn btn-secondary">Clear</button>
+                </div>
+
+                <div class="table-wrap">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Time</th>
+                                <th>Event</th>
+                                <th>Detail</th>
+                                <th>Source IP</th>
+                            </tr>
+                        </thead>
+                        <tbody id="auditRows">
+                            <tr th:each="entry : ${auditEntries}" class="audit-row">
+                                <td class="mono" th:text="${entry.formattedTime}">&#8212;</td>
+                                <td>
+                                    <span class="badge-event"
+                                        th:classappend="${entry.eventType.name().contains('REJECTED') or entry.eventType.name().contains('FAILED') or entry.eventType.name().contains('ERROR') ? 'badge-danger' : (entry.eventType.name().contains('PASSED') or entry.eventType.name() == 'VOTE_CAST' ? 'badge-success' : '')}"
+                                        th:text="${entry.eventType.name()}">EVENT</span>
+                                </td>
+                                <td th:text="${entry.detail}">&#8212;</td>
+                                <td class="mono" th:text="${entry.clientIp}">&#8212;</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </main>
+
+        <footer class="site-footer">
+            <strong>BlockBallot</strong> &mdash; Powered by cryptographic blockchain technology &middot; &copy; 2026
+        </footer>
+    </div>
+
+    <script src="/js/app.js?v=7"></script>
+    <script>
+        function verifyChain() {
+            var btn = document.getElementById('verifyChainBtn');
+            var result = document.getElementById('verifyResult');
+            btn.disabled = true;
+            btn.textContent = 'Verifying...';
+            result.textContent = '';
+
+            fetch('/api/verify-chain')
+                .then(function(r) { return r.json(); })
+                .then(function(data) {
+                    if (data.valid) {
+                        result.style.color = '#4ade80';
+                        result.textContent = '\u2713 All ' + data.blocksVerified + ' blocks verified';
+                    } else {
+                        result.style.color = '#fca5a5';
+                        result.textContent = '\u2717 Failed at block #' + data.failedAtIndex;
+                    }
+                    btn.disabled = false;
+                    btn.textContent = '\uD83D\uDEE1 Verify Chain';
+                })
+                .catch(function() {
+                    result.style.color = '#fca5a5';
+                    result.textContent = 'Verification request failed';
+                    btn.disabled = false;
+                    btn.textContent = '\uD83D\uDEE1 Verify Chain';
+                });
+        }
+
+        // Audit search
+        (function() {
+            var input = document.getElementById('auditSearch');
+            var clear = document.getElementById('clearAuditSearch');
+            var tbody = document.getElementById('auditRows');
+            if (!input || !tbody) return;
+            var rows = Array.prototype.slice.call(tbody.querySelectorAll('tr'));
+            function filter() {
+                var term = input.value.trim().toLowerCase();
+                rows.forEach(function(r) {
+                    r.style.display = r.textContent.toLowerCase().indexOf(term) >= 0 ? '' : 'none';
+                });
+            }
+            input.addEventListener('input', filter);
+            if (clear) {
+                clear.addEventListener('click', function() {
+                    input.value = '';
+                    filter();
+                    input.focus();
+                });
+            }
+        })();
+    </script>
+</body>
+
+</html>

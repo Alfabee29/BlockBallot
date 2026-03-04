@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description"
+        content="BlockBallot — Live election results updated in real time from the blockchain ledger.">
+    <title>BlockBallot | Live Results</title>
+    <link rel="stylesheet" href="/css/app.css?v=7">
+    <style>
+        html,
+        body {
+            margin: 0;
+            background: #0a0a0a;
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+    </style>
+</head>
+
+<body>
+
+    <nav class="topnav">
+        <div class="topnav-inner">
+            <a href="/" class="brand">
+                <div class="brand-seal">&#9878;</div>
+                <div class="brand-name">Block<span>Ballot</span></div>
+            </a>
+            <div class="nav-links">
+                <a href="/" class="nav-link">Cast Vote</a>
+                <a href="/results" class="nav-link active">Live Results</a>
+                <a href="/ledger" class="nav-link">Ledger</a>
+                <a href="/audit" class="nav-link">Audit</a>
+            </div>
+        </div>
+    </nav>
+
+    <div class="page-wrap">
+
+        <section class="hero">
+            <div class="hero-bg"></div>
+            <div class="hero-stripe"></div>
+            <div class="hero-content">
+                <div class="hero-badge anim-1">
+                    <span class="hero-badge-dot"></span>
+                    Live Tabulation
+                </div>
+                <h1 class="hero-title anim-2">
+                    Real-Time <span class="accent">Election Results</span>
+                </h1>
+                <p style="color:var(--text-muted);margin-top:12px;font-size:1rem;" class="anim-3">
+                    All tallies verified and immutable on the blockchain ledger.
+                </p>
+            </div>
+        </section>
+
+        <main class="main-content">
+
+            <!-- Chain Stats Dashboard -->
+            <div class="stats-row anim-2" th:if="${chainStats}">
+                <div class="stat-card">
+                    <div class="stat-value" th:text="${chainStats.totalBlocks}">0</div>
+                    <div class="stat-label">Total Blocks</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value" th:text="${chainStats.totalVotes}">0</div>
+                    <div class="stat-label">Votes Cast</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value mono" style="font-size:.7rem;word-break:break-all;"
+                        th:text="${#strings.abbreviate(chainStats.merkleRoot, 24)}">&#8212;</div>
+                    <div class="stat-label">Merkle Root</div>
+                </div>
+                <div class="stat-card">
+                    <button class="btn btn-primary" type="button" id="verifyChainBtn"
+                        onclick="verifyChain()" style="padding:10px 18px;font-size:.85rem;">
+                        &#x1F6E1; Verify Chain
+                    </button>
+                    <div id="verifyResult" class="stat-label" style="margin-top:8px;"></div>
+                </div>
+            </div>
+
+            <div class="card" style="margin-top:24px;">
+                <div class="section-header">
+                    <div class="section-label">Vote Tally</div>
+                    <div class="section-title">Current Standings</div>
+                    <div class="section-sub">Updated live from the cryptographic ledger. Results cannot be altered.
+                    </div>
+                </div>
+                <hr class="gold-divider">
+
+                <div class="results-grid" id="resultList">
+                    <article class="result-row" th:each="entry : ${voteResults}"
+                        th:attr="data-votes=${entry.value}, data-candidate=${entry.key}">
+                        <div class="result-head">
+                            <span class="result-name" th:text="${entry.key}">Candidate</span>
+                            <span class="vote-count mono" th:text="${entry.value}">0</span>
+                        </div>
+                        <div class="bar"><i></i></div>
+                    </article>
+                </div>
+            </div>
+        </main>
+
+        <footer class="site-footer">
+            <strong>BlockBallot</strong> &mdash; Powered by cryptographic blockchain technology &middot; &copy; 2026
+        </footer>
+    </div>
+
+    <script src="/js/app.js?v=7"></script>
+    <script>
+        function verifyChain() {
+            var btn = document.getElementById('verifyChainBtn');
+            var result = document.getElementById('verifyResult');
+            btn.disabled = true;
+            btn.textContent = 'Verifying...';
+            result.textContent = '';
+
+            fetch('/api/verify-chain')
+                .then(function(r) { return r.json(); })
+                .then(function(data) {
+                    if (data.valid) {
+                        result.style.color = '#4ade80';
+                        result.textContent = '\u2713 All ' + data.blocksVerified + ' blocks verified';
+                    } else {
+                        result.style.color = '#fca5a5';
+                        result.textContent = '\u2717 Failed at block #' + data.failedAtIndex;
+                    }
+                    btn.disabled = false;
+                    btn.textContent = '\uD83D\uDEE1 Verify Chain';
+                })
+                .catch(function() {
+                    result.style.color = '#fca5a5';
+                    result.textContent = 'Verification request failed';
+                    btn.disabled = false;
+                    btn.textContent = '\uD83D\uDEE1 Verify Chain';
+                });
+        }
+    </script>
+</body>
+
+</html>

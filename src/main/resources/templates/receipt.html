@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="BlockBallot — Your vote has been confirmed and sealed on the blockchain.">
+    <title>BlockBallot | Vote Confirmed</title>
+    <link rel="stylesheet" href="/css/app.css?v=7">
+    <style>
+        html,
+        body {
+            margin: 0;
+            background: #0a0a0a;
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+    </style>
+</head>
+
+<body>
+
+    <nav class="topnav">
+        <div class="topnav-inner">
+            <a href="/" class="brand">
+                <div class="brand-seal">&#9878;</div>
+                <div class="brand-name">Block<span>Ballot</span></div>
+            </a>
+            <div class="nav-links">
+                <a href="/" class="nav-link">Cast Vote</a>
+                <a href="/results" class="nav-link">Live Results</a>
+                <a href="/ledger" class="nav-link">Ledger</a>
+                <a href="/audit" class="nav-link">Audit</a>
+            </div>
+        </div>
+    </nav>
+
+    <div class="page-wrap">
+
+        <section class="hero">
+            <div class="hero-bg"></div>
+            <div class="hero-stripe"></div>
+            <div class="hero-content">
+                <div class="hero-badge anim-1">
+                    <span class="hero-badge-dot"></span>
+                    Vote Recorded
+                </div>
+                <h1 class="hero-title anim-2">
+                    Ballot <span class="accent">Confirmed</span>
+                </h1>
+                <p style="color:var(--text-muted);margin-top:12px;font-size:1rem;" class="anim-3">
+                    Your vote has been cryptographically sealed and mined onto the blockchain.
+                </p>
+            </div>
+        </section>
+
+        <main class="main-content">
+            <div class="card receipt-card">
+                <div class="receipt-icon">&#10003;</div>
+
+                <div class="section-header" style="text-align:center;">
+                    <div class="section-label">Blockchain Receipt</div>
+                    <div class="section-title">Vote Successfully Sealed</div>
+                    <div class="section-sub">
+                        Keep your receipt hash as proof of participation. You may verify it anytime in the Ledger
+                        Explorer or run a full chain verification.
+                    </div>
+                </div>
+
+                <hr class="gold-divider">
+
+                <p style="font-size:.82rem;color:var(--text-muted);text-transform:uppercase;letter-spacing:.1em;margin-bottom:10px;">
+                    Your receipt hash (Proof-of-Work mined)
+                </p>
+                <div class="hash-box mono" th:text="${receiptHash}">
+                    0000000000000000000000000000000000000000
+                </div>
+
+                <div class="actions">
+                    <button class="copy btn btn-secondary" type="button" th:attr="data-copy=${receiptHash}">
+                        Copy Hash
+                    </button>
+                    <a href="/ledger" class="btn btn-secondary">Open Ledger</a>
+                    <a href="/audit" class="btn btn-secondary">View Audit Log</a>
+                    <a href="/" class="btn btn-primary">&#8617; Back to Ballot</a>
+                </div>
+            </div>
+        </main>
+
+        <footer class="site-footer">
+            <strong>BlockBallot</strong> &mdash; Powered by cryptographic blockchain technology &middot; &copy; 2026
+        </footer>
+    </div>
+
+    <script src="/js/app.js?v=7"></script>
+</body>
+
+</html>
