@@ -46,6 +46,8 @@ CREATE TABLE voters (
     date_of_birth     DATE         NOT NULL,
     registered_on     TIMESTAMP    DEFAULT CURRENT_TIMESTAMP,
     is_active         BOOLEAN      DEFAULT TRUE,
+    password          VARCHAR(255) NOT NULL,
+    role              VARCHAR(50)  NOT NULL DEFAULT 'ROLE_VOTER',
     FOREIGN KEY (constituency_id) REFERENCES constituencies(constituency_id)
 );
 

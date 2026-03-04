@@ -30,7 +30,9 @@
                 <a href="/" class="nav-link">Cast Vote</a>
                 <a href="/results" class="nav-link">Live Results</a>
                 <a href="/ledger" class="nav-link">Ledger</a>
-                <a href="/audit" class="nav-link">Audit</a>
+                <a th:if="${session.USER_ROLE == 'ROLE_ADMIN'}" href="/audit" class="nav-link">Audit</a>
+                <a th:if="${session.VOTER_ID != null}" href="/logout" class="nav-link"
+                    style="color: var(--danger-text); font-weight: 600;">Sign Out</a>
             </div>
         </div>
     </nav>
@@ -69,7 +71,8 @@
 
                 <hr class="gold-divider">
 
-                <p style="font-size:.82rem;color:var(--text-muted);text-transform:uppercase;letter-spacing:.1em;margin-bottom:10px;">
+                <p
+                    style="font-size:.82rem;color:var(--text-muted);text-transform:uppercase;letter-spacing:.1em;margin-bottom:10px;">
                     Your receipt hash (Proof-of-Work mined)
                 </p>
                 <div class="hash-box mono" th:text="${receiptHash}">
@@ -81,7 +84,8 @@
                         Copy Hash
                     </button>
                     <a href="/ledger" class="btn btn-secondary">Open Ledger</a>
-                    <a href="/audit" class="btn btn-secondary">View Audit Log</a>
+                    <a th:if="${session.USER_ROLE == 'ROLE_ADMIN'}" href="/audit" class="btn btn-secondary">View Audit
+                        Log</a>
                     <a href="/" class="btn btn-primary">&#8617; Back to Ballot</a>
                 </div>
             </div>

@@ -45,8 +45,26 @@ public class Voter {
     @Column(name = "is_active")
     private Boolean isActive;
 
+    @Column(name = "password", nullable = false)
+    private String password;
+
+    @Column(name = "role", nullable = false)
+    private String role;
+
     protected Voter() {
         /* Required by JPA */ }
+
+    public Voter(String voterId, String voterName, Constituency constituency, LocalDate dateOfBirth, String password,
+            String role) {
+        this.voterId = voterId;
+        this.voterName = voterName;
+        this.constituency = constituency;
+        this.dateOfBirth = dateOfBirth;
+        this.password = password;
+        this.role = role;
+        this.registeredOn = LocalDateTime.now();
+        this.isActive = true;
+    }
 
     // ── Getters (Encapsulation — no setters exposed) ─────────
     public String getVoterId() {
@@ -71,6 +89,14 @@ public class Voter {
 
     public Boolean getIsActive() {
         return isActive;
+    }
+
+    public String getPassword() {
+        return password;
+    }
+
+    public String getRole() {
+        return role;
     }
 
     /**

@@ -24,11 +24,14 @@ INSERT INTO poll_options (poll_id, option_text, party_id, constituency_id) VALUE
 INSERT INTO poll_options (poll_id, option_text, party_id, constituency_id) VALUES (101, 'Diana Patel', 4, 1);
 
 -- Registered voters
-INSERT INTO voters (voter_id, voter_name, constituency_id, date_of_birth)
-VALUES ('ABC1234567', 'Rahul Sharma', 1, '1990-05-15');
-INSERT INTO voters (voter_id, voter_name, constituency_id, date_of_birth)
-VALUES ('DEF7654321', 'Priya Gupta', 1, '1985-11-22');
-INSERT INTO voters (voter_id, voter_name, constituency_id, date_of_birth)
-VALUES ('GHI9876543', 'Amit Verma', 1, '1998-01-30');
-INSERT INTO voters (voter_id, voter_name, constituency_id, date_of_birth)
-VALUES ('JKL4567890', 'Sunita Devi', 1, '1975-08-10');
+-- Passwords will be configured by ApplicationRunner at startup
+INSERT INTO voters (voter_id, voter_name, constituency_id, date_of_birth, password, role)
+VALUES ('ABC1234567', 'Rahul Sharma', 1, '1990-05-15', 'PENDING', 'ROLE_VOTER');
+INSERT INTO voters (voter_id, voter_name, constituency_id, date_of_birth, password, role)
+VALUES ('DEF7654321', 'Priya Gupta', 1, '1985-11-22', 'PENDING', 'ROLE_VOTER');
+INSERT INTO voters (voter_id, voter_name, constituency_id, date_of_birth, password, role)
+VALUES ('GHI9876543', 'Amit Verma', 1, '1998-01-30', 'PENDING', 'ROLE_VOTER');
+INSERT INTO voters (voter_id, voter_name, constituency_id, date_of_birth, password, role)
+VALUES ('JKL4567890', 'Sunita Devi', 1, '1975-08-10', 'PENDING', 'ROLE_VOTER');
+INSERT INTO voters (voter_id, voter_name, constituency_id, date_of_birth, password, role)
+VALUES ('ADMIN', 'System Admin', 1, '1980-01-01', 'PENDING', 'ROLE_ADMIN');

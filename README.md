@@ -63,17 +63,28 @@ The platform features a modern monochrome UI with glassmorphism effects, a real-
 | Page | Description |
 |------|-------------|
 | `/` | **Cast Vote** — Select a candidate and submit your ballot securely |
+| `/login` | **Login Portal** — Secure access for registered electors |
+| `/register` | **Elector Registration** — Enroll securely and receive auto-assigned EPIC ID |
 | `/results` | **Live Results** — Real-time vote tally with chain statistics dashboard |
 | `/ledger` | **Ledger Explorer** — Inspect every block, hash, and timestamp |
-| `/audit` | **Audit Log** — Security event monitor with searchable activity feed |
+| `/audit` | **Audit Log** — Security event monitor (Restricted to `ROLE_ADMIN`) |
+| `/admin` | **Admin Panel** — Electoral roll management and status verification (Restricted to `ROLE_ADMIN`) |
 
 ---
 
 ## Features
 
+### Authentication & Role Flow
+
+- **Elector Registration** — users enroll their details and receive mathematically unique, auto-assigned EPIC ID numbers
+- **Dynamic Session Security** — all voting flow pages are shielded behind robust `HttpSession` validations and Interceptor firewalls
+- **Role-Based Access Control (RBAC)** — strict `ROLE_ADMIN` / `ROLE_VOTER` segregation preventing unauthorized lateral movement
+- **Safe Session Takedown** — dynamic "Sign Out" actions available across every portal for secure session closure
+
 ### Voting System
 
-- **Voter registry validation** — only registered EPIC IDs can vote
+- **Voter registry validation** — only registered EPIC IDs with valid credentials can vote
+- **Locked Input Authentication** — active session safely pipes known keys without error-prone manual repetitive inputs
 - **One vote per person** — duplicate detection via irreversible cryptographic tokens
 - **Candidate listing** with party affiliations
 - **Instant receipt** — blockchain hash as proof of participation
@@ -103,7 +114,8 @@ The platform features a modern monochrome UI with glassmorphism effects, a real-
 ### UI/UX
 
 - **Monochrome design system** with CSS custom properties
-- **WebGL particle network** background (Three.js)
+- **WebGL particle network** background (Three.js) interacting dynamically with inputs
+- **Dynamic Interaction Glow & Burst Animations** — visual kinetic feedback connecting DOM input focus vs 3D render depth
 - **Glassmorphism** card effects with backdrop blur
 - **Micro-animations** — card entrances, hover effects, page transitions
 - **Google Fonts** — DM Serif Display, Inter, JetBrains Mono
@@ -355,16 +367,17 @@ mvn clean spring-boot:run
 
 The app will start at **http://localhost:8080**
 
-### Test Voter IDs
+### Available Accounts
 
-The following voter IDs are pre-registered in the database:
+The following profiles are pre-seeded in the database to quickly tour the environment:
 
-| Voter ID | Name |
-|----------|------|
-| `ABC1234567` | Rahul Sharma |
-| `DEF7654321` | Priya Gupta |
-| `GHI9876543` | Amit Verma |
-| `JKL4567890` | Sunita Devi |
+| ID / EPIC Number | Password | Role |
+|----------|------|-----|
+| `ADMIN` | `admin123` | `ROLE_ADMIN` |
+| `ABC1234567` | `password123` | `ROLE_VOTER` |
+| `DEF7654321` | `password123` | `ROLE_VOTER` |
+| `GHI9876543` | `password123` | `ROLE_VOTER` |
+| `JKL4567890` | `password123` | `ROLE_VOTER` |
 
 ### Configuration
 
@@ -403,9 +416,12 @@ src/main/java/com/securevote/
 ├── SecureVotingApplication.java          # Spring Boot entry point
 │
 ├── config/
-│   └── AppConfig.java                    # Bean configuration
+│   ├── AppConfig.java                    # Bean configuration & Startup Seeding
+│   └── WebConfig.java                    # Interceptor wiring
 │
 ├── controller/
+│   ├── AuthController.java               # Login / Register endpoints
+│   ├── AdminController.java              # RBAC Admin Panel
 │   └── VotingController.java             # MVC + REST controller
 │
 ├── model/
@@ -419,18 +435,20 @@ src/main/java/com/securevote/
 │   ├── PollOption.java                   # JPA entity — candidates table
 │   ├── Party.java                        # JPA entity — parties table
 │   ├── Constituency.java                 # JPA entity — constituencies table
-│   ├── Voter.java                        # JPA entity — voters table
+│   ├── Voter.java                        # JPA entity — voters table (stores credentials)
 │   └── VoteRecord.java                   # JPA entity — vote records table
 │
 ├── repository/
 │   ├── PollOptionRepository.java         # JPA interface — candidates
 │   ├── PollRepository.java               # JPA interface — polls
 │   ├── VoterRepository.java              # JPA interface — voters
+│   ├── ConstituencyRepository.java       # JPA interface — constituencies
 │   └── VoteRecordRepository.java         # JPA interface — vote records
 │
 ├── security/
 │   ├── CryptoLayers.java                 # 5-layer hashing + PoW + Merkle tree
 │   ├── InputValidator.java               # Regex whitelisting for voter IDs
+│   ├── AuthInterceptor.java              # Session state route firewalls
 │   ├── RateLimiter.java                  # Sliding-window rate limiter
 │   ├── SecurityHeadersFilter.java        # CSP, HSTS, X-Frame-Options filter
 │   └── AuditLog.java                     # Immutable security event log
@@ -444,11 +462,14 @@ src/main/resources/
 ├── schema.sql                            # Normalized database schema (7 tables)
 ├── data.sql                              # Seed data
 ├── templates/
-│   ├── vote.html                         # Voting page
+│   ├── login.html                        # Secure authentication portal
+│   ├── register.html                     # Elector enrollment interface
+│   ├── vote.html                         # Locked voting booth
 │   ├── receipt.html                      # Vote confirmation + receipt hash
 │   ├── results.html                      # Live results + chain stats
 │   ├── ledger.html                       # Blockchain explorer
-│   └── audit.html                        # Security audit log
+│   ├── audit.html                        # Restricted security audit log
+│   └── admin.html                        # Restricted management panel
 └── static/
     ├── css/app.css                        # Monochrome design system
     └── js/app.js                          # WebGL background + interactions

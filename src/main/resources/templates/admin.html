@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BlockBallot | Admin Panel</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="stylesheet" href="/css/app.css?v=8">
+    <style>
+        html, body {
+            margin: 0;
+            background: #0a0a0a;
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+    </style>
+</head>
+<body>
+    <nav class="topnav">
+        <div class="topnav-inner">
+            <a href="/" class="brand">
+                <div class="brand-seal">&#9878;</div>
+                <div class="brand-name">Block<span>Ballot</span></div>
+            </a>
+            <div class="nav-links">
+                <a href="/" class="nav-link">Cast Vote</a>
+                <a href="/results" class="nav-link">Live Results</a>
+                <a href="/ledger" class="nav-link">Ledger</a>
+                <a th:if="${session.USER_ROLE == 'ROLE_ADMIN'}" href="/audit" class="nav-link">Audit</a>
+                <a href="/admin" class="nav-link active">Admin Panel</a>
+                
+                            <a th:if="${session.VOTER_ID != null}" href="/logout" class="nav-link" style="color: var(--danger-text); font-weight: 600;">Sign Out</a>
+            </div>
+        </div>
+    </nav>
+
+    <div class="page-wrap">
+        <section class="hero" style="min-height: 250px;">
+            <div class="hero-bg" style="background: radial-gradient(ellipse 70% 50% at 50% 50%, rgba(200, 50, 50, 0.05) 0%, transparent 70%);"></div>
+            <div class="hero-stripe-tricolor" style="background: linear-gradient(90deg, transparent 0%, rgba(200, 50, 50, 0.3) 50%, transparent 100%);"></div>
+            <div class="hero-content" style="padding: 40px 32px;">
+                <h1 class="hero-title anim-2">
+                    <span class="accent">System Administration</span>
+                </h1>
+                <p class="hero-sub anim-3">Secure Electoral Roll Management & Audit</p>
+            </div>
+        </section>
+
+        <main class="main-content">
+            <div class="section-header">
+                <div class="section-label">ELECTORAL ROLL</div>
+                <div class="section-title">Registered Electors</div>
+            </div>
+
+            <div class="table-wrap anim-1">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>EPIC / Voter ID</th>
+                            <th>Name</th>
+                            <th>DOB</th>
+                            <th>Constituency</th>
+                            <th>Status</th>
+                            <th>Role</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr th:each="v : ${voters}">
+                            <td><span class="hash-chip" th:text="${v.voterId}">ABC1234</span></td>
+                            <td th:text="${v.voterName}">John Doe</td>
+                            <td class="mono" th:text="${v.dateOfBirth}">1990-01-01</td>
+                            <td th:text="${v.constituency.constituencyName + ', ' + v.constituency.state}">Area</td>
+                            <td>
+                                <span th:if="${v.isActive}" class="badge-event badge-success">ACTIVE</span>
+                                <span th:if="${!v.isActive}" class="badge-event badge-danger">INACTIVE</span>
+                            </td>
+                            <td>
+                                <span th:if="${v.role == 'ROLE_ADMIN'}" class="badge-event badge-danger">ADMIN</span>
+                                <span th:if="${v.role == 'ROLE_VOTER'}" class="badge-event badge-vote">VOTER</span>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </main>
+    </div>
+</body>
+</html>
+

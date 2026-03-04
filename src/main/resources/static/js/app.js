@@ -231,10 +231,10 @@
     var tex = new THREE.CanvasTexture(tc);
 
     var mat = new THREE.PointsMaterial({
-      size: 8,
+      size: 10,
       map: tex,
       transparent: true,
-      opacity: 0.3,
+      opacity: 0.5,
       blending: THREE.AdditiveBlending,
       depthWrite: false,
       sizeAttenuation: true
@@ -268,9 +268,12 @@
       }
     }
     lineGeo.setAttribute('position', new THREE.BufferAttribute(new Float32Array(lineVerts), 3));
-    var lineMat = new THREE.LineBasicMaterial({ color: 0xffffff, transparent: true, opacity: 0.04 });
+    var lineMat = new THREE.LineBasicMaterial({ color: 0xffffff, transparent: true, opacity: 0.15 });
     var lines = new THREE.LineSegments(lineGeo, lineMat);
     scene.add(lines);
+
+    // Make animation state global so other events can trigger it
+    window.animState = { glow: 0, burst: 0 };
 
     /* ── Mouse parallax ── */
     var mouse = { x: 0, y: 0 };
@@ -305,14 +308,23 @@
       camera.position.y = -target.y * 35 - scrollY * 0.04;
       camera.lookAt(scene.position);
 
-      // Gentle rotation
-      particles.rotation.y = t * 0.015;
-      particles.rotation.x = t * 0.008;
-      lines.rotation.y = t * 0.01;
-      lines.rotation.x = t * 0.005;
+      // Update animation state decays
+      window.animState.glow *= 0.95;
+      window.animState.burst *= 0.92;
+      
+      var glow = window.animState.glow;
+      var burst = window.animState.burst;
 
-      // Subtle pulsing opacity
-      mat.opacity = 0.25 + Math.sin(t * 0.6) * 0.08;
+      // Burst effects: zoom in and spin faster
+      camera.position.z = 500 - (glow * 50) - (burst * 250);
+      particles.rotation.y = t * 0.015 + (burst * 0.2);
+      particles.rotation.x = t * 0.008 + (burst * 0.1);
+      lines.rotation.y = t * 0.01 + (burst * 0.2);
+      lines.rotation.x = t * 0.005 + (burst * 0.1);
+
+      // Brightness pulsing
+      mat.opacity = 0.4 + Math.sin(t * 0.6) * 0.1 + (glow * 0.4) + (burst * 0.6);
+      lineMat.opacity = 0.1 + (glow * 0.2) + (burst * 0.4);
 
       renderer.render(scene, camera);
     })();
@@ -326,6 +338,18 @@
     initCopyButtons();
     initLedgerSearch();
     initWebGL();
+    
+    // Bind interaction inputs to glow effect
+    document.querySelectorAll('input, select').forEach(function(el) {
+        el.addEventListener('input', function() { if (window.animState) window.animState.glow = 1.0; });
+        el.addEventListener('change', function() { if (window.animState) window.animState.glow = 1.0; });
+        el.addEventListener('focus', function() { if (window.animState) window.animState.glow = 1.0; });
+    });
+
+    // Bind all buttons and submit events to burst effect
+    document.querySelectorAll('button, .btn, input[type="submit"]').forEach(function(el) {
+        el.addEventListener('click', function() { if (window.animState) window.animState.burst = 1.0; });
+    });
   });
 
 })();

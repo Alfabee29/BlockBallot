@@ -18,6 +18,7 @@ import com.securevote.security.CryptoLayers;
 import com.securevote.service.VotingService;
 
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpSession;
 
 /**
  * Web controller — handles HTTP requests.
@@ -62,7 +63,15 @@ public class VotingController {
     // ── Vote page ────────────────────────────────────────────
 
     @GetMapping("/")
-    public String showVotingPage(Model model) {
+    public String showVotingPage(Model model, HttpSession session) {
+        String role = (String) session.getAttribute("USER_ROLE");
+        if ("ROLE_ADMIN".equals(role)) {
+            return "redirect:/admin";
+        }
+
+        String voterId = (String) session.getAttribute("VOTER_ID");
+        model.addAttribute("voterId", voterId);
+        model.addAttribute("voterName", session.getAttribute("VOTER_NAME"));
         model.addAttribute("candidates", votingService.getCandidates(POLL_ID));
         return "vote";
     }
@@ -71,9 +80,12 @@ public class VotingController {
 
     @PostMapping("/cast-vote")
     public String castVote(@RequestParam("selectedOptionId") int optionId,
-            @RequestParam("voterId") String voterId,
+            HttpSession session,
             Model model,
             HttpServletRequest request) {
+
+        String voterId = (String) session.getAttribute("VOTER_ID");
+
         try {
             String receiptHash = votingService.castVote(
                     voterId, optionId, POLL_ID, getClientIp(request));

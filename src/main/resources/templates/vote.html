@@ -32,7 +32,8 @@
                 <a href="/" class="nav-link active">Cast Vote</a>
                 <a href="/results" class="nav-link">Live Results</a>
                 <a href="/ledger" class="nav-link">Ledger</a>
-                <a href="/audit" class="nav-link">Audit</a>
+                <a th:if="${session.USER_ROLE == 'ROLE_ADMIN'}" href="/audit" class="nav-link">Audit</a>
+                            <a th:if="${session.VOTER_ID != null}" href="/logout" class="nav-link" style="color: var(--danger-text); font-weight: 600;">Sign Out</a>
             </div>
         </div>
     </nav>
@@ -78,10 +79,9 @@
                     <div th:if="${errorMsg}" class="error-box" th:text="${errorMsg}"></div>
 
                     <div class="field-group">
-                        <label for="voterId">EPIC / Voter ID Number</label>
-                        <input type="text" name="voterId" id="voterId" autocomplete="off" placeholder="e.g. ABC1234567"
-                            required pattern="[A-Za-z0-9]{6,20}" title="6-20 alphanumeric characters (e.g. ABC1234567)"
-                            maxlength="20">
+                        <label for="voterId">Authenticated Elector ID</label>
+                        <input type="text" name="voterId" id="voterId" readonly class="search" th:value="${voterId}"
+                            style="opacity: 0.7; pointer-events: none; background: transparent; border-color: var(--border-subtle);">
                     </div>
 
                     <div class="field-group">
@@ -110,3 +110,4 @@
 </body>
 
 </html>
+

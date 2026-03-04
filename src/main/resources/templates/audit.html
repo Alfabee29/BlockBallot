@@ -30,7 +30,8 @@
                 <a href="/" class="nav-link">Cast Vote</a>
                 <a href="/results" class="nav-link">Live Results</a>
                 <a href="/ledger" class="nav-link">Ledger</a>
-                <a href="/audit" class="nav-link active">Audit</a>
+                <a th:if="${session.USER_ROLE == 'ROLE_ADMIN'}" href="/audit" class="nav-link active">Audit</a>
+                            <a th:if="${session.VOTER_ID != null}" href="/logout" class="nav-link" style="color: var(--danger-text); font-weight: 600;">Sign Out</a>
             </div>
         </div>
     </nav>
@@ -180,3 +181,4 @@
 </body>
 
 </html>
+
